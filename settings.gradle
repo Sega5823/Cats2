@@ -1,0 +1,6 @@
+rootProject.name = 'Cats2'
+include 'Cats'
+include 'Entity'
+include 'Owners'
+include 'GateWay'
+

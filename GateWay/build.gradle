@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id("org.springframework.boot") version "2.6.1"
+    //id("io.spring.dependency-management")
+    id("application")
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+application{
+    mainClass = 'org.example.SpringMainGateWay'
+}
+
+tasks.register('copyDependencies', Copy) {
+    from configurations.runtimeClasspath
+    into "$buildDir/libs/lib"
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes 'Main-Class': 'org.example.SpringMain'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.build {
+    dependsOn tasks.named('copyDependencies')
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation project(':Entity')
+    implementation 'com.github.cage:cage:1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.2.0'
+//    implementation 'org.springframework.security:spring-security-config:5.6.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-mail:3.2.0'
+    implementation 'org.springframework.kafka:spring-kafka:3.2.3'
+    implementation 'org.postgresql:postgresql:42.2.12'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    implementation 'org.webjars:bootstrap:5.3.3'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+}
+
+test {
+    useJUnitPlatform()
+}
