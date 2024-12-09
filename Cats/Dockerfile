@@ -7,7 +7,8 @@ COPY build/libs/lib /app/lib
 
 ENV MAIN_CLASS = "org.example.SpringMain"
 
-#CMD ["java","-jar","/app/app.jar"]
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+CMD ["java","-jar","/app/app.jar"]
+
+#ENTRYPOINT ["java","-jar","/app/app.jar"]
 
 #C:\Users\sega9\.jdks\corretto-17.0.12

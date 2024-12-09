@@ -27,6 +27,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:latest
+    container_name: "kafka"
     ports:
       - "9092:9092"
     environment:
@@ -34,7 +35,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
 #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://cats2-kafka-1:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - kafka-network
@@ -58,40 +59,19 @@ services:
     build:
       context: ./Cats/
       dockerfile: Dockerfile
+    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://users_bd:5432/cats
+      SPRING_DATASOURCE_URL: jdbc:postgresql://cats_bd:5432/Cats
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 5823
     depends_on:
+#      - user-bd
       - cat-bd
       - kafka
     ports:
       - "8080-8080"
     networks:
       - kafka-network
-
-
-  owner-bd:
-    image: postgres:latest
-    container_name: "owners_bd"
-    volumes:
-      - postgres_data:/var/lib/postgresql/ownersdata
-    environment:
-      POSTGRES_DB: Owners
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 5823
-    ports:
-      - "5433:5432"
-
-  owner-service:
-    build:
-      context: ./Owners/
-      dockerfile: Dockerfile
-
-    depends_on:
-      - owner-bd
-      - kafka
-    ports:
-      - "8081-8081"
-    networks:
-      - kafka-network
-
 
   user-bd:
     image: postgres:latest
@@ -112,6 +92,10 @@ services:
     build:
       context: ./GateWay/
       dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://users_bd:5432/users
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 5823
     depends_on:
       - user-bd
       - kafka
@@ -119,6 +103,34 @@ services:
       - "8082-8082"
     networks:
       - kafka-network
+
+#  owner-bd:
+#    image: postgres:latest
+#    container_name: "owners_bd"
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/ownersdata
+#    environment:
+#      POSTGRES_DB: Owners
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: 5823
+#    ports:
+#      - "5433:5432"
+#
+#  owner-service:
+#    build:
+#      context: ./Owners/
+#      dockerfile: Dockerfile
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://owners_bd:5432/Owners
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: 5823
+#    depends_on:
+#      - owner-bd
+#      - kafka
+#    ports:
+#      - "8081-8081"
+#    networks:
+#      - kafka-network
 
 networks:
   kafka-network:
