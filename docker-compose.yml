@@ -73,8 +73,14 @@ services:
       POSTGRES_PASSWORD: 5823
     ports:
       - "5434:5432"
-#    networks:
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+
+  #    networks:
 #      - kafka-network
+
+
+
 
   user-service:
     container_name: "user_service"
@@ -90,11 +96,14 @@ services:
       - kafka
     ports:
       - "8082-8082"
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
 #    networks:
 #      - kafka-network
 
 #http://172.18.0.7:8082/
 #http://172.18.0.1/
+#http://localhost:8082/
 
 #networks:
 #  kafka-network:
